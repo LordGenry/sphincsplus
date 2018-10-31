@@ -49,37 +49,37 @@ for PARAMS in ./params/*;do
   for CFILE in *.c;do
     OFILE=$(echo $CFILE | sed "s/c$/o/")
     $CC $CFLAGS -c $CFILE \
-      -Dcrypto_sign_secretkeybytes=crypto_sign_secretkeybytes_$NAME \
-      -Dcrypto_sign_publickeybytes=crypto_sign_publickeybytes_$NAME \
-      -Dcrypto_sign_bytes=crypto_sign_bytes_$NAME \
-      -Dcrypto_sign_seedbytes=crypto_sign_seedbytes_$NAME \
-      -Dcrypto_sign_seed_keypair=crypto_sign_seed_keypair_$NAME \
-      -Dcrypto_sign_keypair=crypto_sign_keypair_$NAME \
-      -Dcrypto_sign_open=crypto_sign_open_$NAME \
-      -Dcrypto_sign=crypto_sign_$NAME \
+      -Dcrypto_sign_secretkeybytes=crypto_sign_${NAME}_secretkeybytes \
+      -Dcrypto_sign_publickeybytes=crypto_sign_${NAME}_publickeybytes \
+      -Dcrypto_sign_bytes=crypto_sign_${NAME}_bytes \
+      -Dcrypto_sign_seedbytes=crypto_sign_${NAME}_seedbytes \
+      -Dcrypto_sign_seed_keypair=crypto_sign_${NAME}_seed_keypair \
+      -Dcrypto_sign_keypair=crypto_sign_${NAME}_keypair \
+      -Dcrypto_sign_open=crypto_sign_${NAME}_open \
+      -Dcrypto_sign=crypto_sign_${NAME} \
       -o $OFILE
   done
   ld -r *.o -o $NAME.o
   objcopy \
-    --keep-global-symbol=crypto_sign_secretkeybytes_$NAME \
-    --keep-global-symbol=crypto_sign_publickeybytes_$NAME \
-    --keep-global-symbol=crypto_sign_bytes_$NAME \
-    --keep-global-symbol=crypto_sign_seedbytes_$NAME \
-    --keep-global-symbol=crypto_sign_seed_keypair_$NAME \
-    --keep-global-symbol=crypto_sign_keypair_$NAME \
-    --keep-global-symbol=crypto_sign_$NAME \
-    --keep-global-symbol=crypto_sign_open_$NAME \
+    --keep-global-symbol=crypto_sign_${NAME}_secretkeybytes \
+    --keep-global-symbol=crypto_sign_${NAME}_publickeybytes \
+    --keep-global-symbol=crypto_sign_${NAME}_bytes \
+    --keep-global-symbol=crypto_sign_${NAME}_seedbytes \
+    --keep-global-symbol=crypto_sign_${NAME}_seed_keypair \
+    --keep-global-symbol=crypto_sign_${NAME}_keypair \
+    --keep-global-symbol=crypto_sign_${NAME} \
+    --keep-global-symbol=crypto_sign_${NAME}_open \
     $NAME.o ../$NAME.o
   rm $SPXDIR/libobj/tmp/*
 
-  echo "unsigned long long crypto_sign_secretkeybytes_$NAME(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_publickeybytes_$NAME(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_keybytes_$NAME(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_seedkeybytes_$NAME(void);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_seed_keypair_$NAME(unsigned char *pk, unsigned char *sk, const unsigned char *seed);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_keypair_$NAME(unsigned char *pk, unsigned char *sk);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_$NAME(unsigned char *sm, unsigned long long *smlen, const unsigned char *m, unsigned long long mlen, const unsigned char *sk);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_open_$NAME(unsigned char *m, unsigned long long *mlen, const unsigned char *sm, unsigned long long smlen, const unsigned char *pk);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_secretkeybytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_publickeybytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_keybytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_seedkeybytes(void);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_${NAME}_seed_keypair(unsigned char *pk, unsigned char *sk, const unsigned char *seed);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_${NAME}_keypair(unsigned char *pk, unsigned char *sk);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_${NAME}(unsigned char *sm, unsigned long long *smlen, const unsigned char *m, unsigned long long mlen, const unsigned char *sk);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_${NAME}_open(unsigned char *m, unsigned long long *mlen, const unsigned char *sm, unsigned long long smlen, const unsigned char *pk);" >> $SPXDIR/libspx.h
 
 done
 
