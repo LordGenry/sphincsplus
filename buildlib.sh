@@ -32,6 +32,10 @@ for PARAMS in ./params/*;do
   for CFILE in *.c;do
     OFILE=$(echo $CFILE | sed "s/c$/o/")
     $CC $CFLAGS -c $CFILE \
+      -Dcrypto_secretkeybytes=crypto_secretkeybytes_$NAME \
+      -Dcrypto_publickeybytes=crypto_publickeybytes_$NAME \
+      -Dcrypto_bytes=crypto_bytes_$NAME \
+      -Dcrypto_seedbytes=crypto_seedbytes_$NAME \
       -Dcrypto_sign_seed_keypair=crypto_sign_seed_keypair_$NAME \
       -Dcrypto_sign_keypair=crypto_sign_keypair_$NAME \
       -Dcrypto_sign_open=crypto_sign_open_$NAME \
@@ -40,6 +44,10 @@ for PARAMS in ./params/*;do
   done
   ld -r *.o -o $NAME.o
   objcopy \
+    --keep-global-symbol=crypto_secretkeybytes_$NAME \
+    --keep-global-symbol=crypto_publickeybytes_$NAME \
+    --keep-global-symbol=crypto_bytes_$NAME \
+    --keep-global-symbol=crypto_seedbytes_$NAME \
     --keep-global-symbol=crypto_sign_seed_keypair_$NAME \
     --keep-global-symbol=crypto_sign_keypair_$NAME \
     --keep-global-symbol=crypto_sign_$NAME \
