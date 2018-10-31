@@ -49,10 +49,10 @@ for PARAMS in ./params/*;do
   for CFILE in *.c;do
     OFILE=$(echo $CFILE | sed "s/c$/o/")
     $CC $CFLAGS -c $CFILE \
-      -Dcrypto_secretkeybytes=crypto_secretkeybytes_$NAME \
-      -Dcrypto_publickeybytes=crypto_publickeybytes_$NAME \
-      -Dcrypto_bytes=crypto_bytes_$NAME \
-      -Dcrypto_seedbytes=crypto_seedbytes_$NAME \
+      -Dcrypto_sign_secretkeybytes=crypto_sign_secretkeybytes_$NAME \
+      -Dcrypto_sign_publickeybytes=crypto_sign_publickeybytes_$NAME \
+      -Dcrypto_sign_bytes=crypto_sign_bytes_$NAME \
+      -Dcrypto_sign_seedbytes=crypto_sign_seedbytes_$NAME \
       -Dcrypto_sign_seed_keypair=crypto_sign_seed_keypair_$NAME \
       -Dcrypto_sign_keypair=crypto_sign_keypair_$NAME \
       -Dcrypto_sign_open=crypto_sign_open_$NAME \
@@ -61,10 +61,10 @@ for PARAMS in ./params/*;do
   done
   ld -r *.o -o $NAME.o
   objcopy \
-    --keep-global-symbol=crypto_secretkeybytes_$NAME \
-    --keep-global-symbol=crypto_publickeybytes_$NAME \
-    --keep-global-symbol=crypto_bytes_$NAME \
-    --keep-global-symbol=crypto_seedbytes_$NAME \
+    --keep-global-symbol=crypto_sign_secretkeybytes_$NAME \
+    --keep-global-symbol=crypto_sign_publickeybytes_$NAME \
+    --keep-global-symbol=crypto_sign_bytes_$NAME \
+    --keep-global-symbol=crypto_sign_seedbytes_$NAME \
     --keep-global-symbol=crypto_sign_seed_keypair_$NAME \
     --keep-global-symbol=crypto_sign_keypair_$NAME \
     --keep-global-symbol=crypto_sign_$NAME \
@@ -72,10 +72,14 @@ for PARAMS in ./params/*;do
     $NAME.o ../$NAME.o
   rm $SPXDIR/libobj/tmp/*
 
-#  echo "unsigned long long crypto_secretkeybytes(void);" >> $SPXDIR/libspx.h
-#  echo "unsigned long long crypto_publickeybytes(void);" >> $SPXDIR/libspx.h
-#  echo "unsigned long long crypto_keybytes(void);" >> $SPXDIR/libspx.h
-#  echo "unsigned long long crypto_seedkeybytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_secretkeybytes_$NAME(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_publickeybytes_$NAME(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_keybytes_$NAME(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_seedkeybytes_$NAME(void);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_seed_keypair_$NAME(unsigned char *pk, unsigned char *sk, const unsigned char *seed);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_keypair_$NAME(unsigned char *pk, unsigned char *sk);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_$NAME(unsigned char *sm, unsigned long long *smlen, const unsigned char *m, unsigned long long mlen, const unsigned char *sk);" >> $SPXDIR/libspx.h
+  echo "int crypto_sign_open_$NAME(unsigned char *m, unsigned long long *mlen, const unsigned char *sm, unsigned long long smlen, const unsigned char *pk);" >> $SPXDIR/libspx.h
 
 done
 
