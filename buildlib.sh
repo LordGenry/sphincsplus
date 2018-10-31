@@ -4,20 +4,37 @@ SPXDIR=$(realpath `dirname $0`)
 CC="gcc"
 CFLAGS="-Wall -Wextra -Wpedantic -O3"
 
-cd $SPXDIR
 
 if [ -e $SPXDIR/libobj ];then
   echo "$SPXDIR/libobj already exists, exiting."
   exit -1
 fi
 
+if [ -e $SPXDIR/libspx.so ];then
+  echo "$SPXDIR/libspx.so already exists, exiting."
+  exit -1
+fi
+
+if [ -e $SPXDIR/libspx.h ];then
+  echo "$SPXDIR/libspx.h already exists, exiting."
+  exit -1
+fi
+
+cd $SPXDIR
 mkdir -p libobj/tmp #XXX: Check if exists
+
+echo "#ifndef LIBSPX_H"  > $SPXDIR/libspx.h
+echo "#define LIBSPX_H" >> $SPXDIR/libspx.h
 
 cd ref
 
 for PARAMS in ./params/*;do
   NAME=$(echo $PARAMS | sed "s/.*params-sphincs-/spx_/" | sed "s/-/_/g" | sed "s/\.h$//")
   HASH=$(echo $NAME | sed "s/spx_//" | sed "s/_.*//")
+
+  if [ $HASH == "sha256" ];then
+    continue;
+  fi
 
   echo Building $NAME
 
@@ -54,9 +71,18 @@ for PARAMS in ./params/*;do
     --keep-global-symbol=crypto_sign_open_$NAME \
     $NAME.o ../$NAME.o
   rm $SPXDIR/libobj/tmp/*
+
+#  echo "unsigned long long crypto_secretkeybytes(void);" >> $SPXDIR/libspx.h
+#  echo "unsigned long long crypto_publickeybytes(void);" >> $SPXDIR/libspx.h
+#  echo "unsigned long long crypto_keybytes(void);" >> $SPXDIR/libspx.h
+#  echo "unsigned long long crypto_seedkeybytes(void);" >> $SPXDIR/libspx.h
+
 done
 
 cd $SPXDIR
 
 gcc -shared $SPXDIR/libobj/*.o -o libspx.so
+
+echo "#endif /* #define LIBSPX_H */" >> $SPXDIR/libspx.h
+
 rm -r libobj
