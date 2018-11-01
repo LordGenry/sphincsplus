@@ -42,7 +42,9 @@ for PARAMS in ./params/*;do
   cp *.c *.h $SPXDIR/libobj/tmp/
   rm $SPXDIR/libobj/tmp/rng.c
   rm $SPXDIR/libobj/tmp/hash_*.c
+  rm $SPXDIR/libobj/tmp/params.h
   cp hash_$HASH.c $SPXDIR/libobj/tmp
+  cp $PARAMS $SPXDIR/libobj/tmp/params.h
 
   cd $SPXDIR/libobj/tmp
 
