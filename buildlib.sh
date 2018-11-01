@@ -40,7 +40,8 @@ for PARAMS in ./params/*;do
 
   cd $SPXDIR/ref
   cp *.c *.h $SPXDIR/libobj/tmp/
-  rm $SPXDIR/libobj/tmp/rng.c
+  rm $SPXDIR/libobj/tmp/rng.{c,h}
+  rm $SPXDIR/libobj/tmp/PQCgenKAT_sign.c
   rm $SPXDIR/libobj/tmp/hash_*.c
   rm $SPXDIR/libobj/tmp/params.h
   cp hash_$HASH.c $SPXDIR/libobj/tmp
@@ -76,8 +77,8 @@ for PARAMS in ./params/*;do
 
   echo "unsigned long long crypto_sign_${NAME}_secretkeybytes(void);" >> $SPXDIR/libspx.h
   echo "unsigned long long crypto_sign_${NAME}_publickeybytes(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_${NAME}_keybytes(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_${NAME}_seedkeybytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_bytes(void);" >> $SPXDIR/libspx.h
+  echo "unsigned long long crypto_sign_${NAME}_seedbytes(void);" >> $SPXDIR/libspx.h
   echo "int crypto_sign_${NAME}_seed_keypair(unsigned char *pk, unsigned char *sk, const unsigned char *seed);" >> $SPXDIR/libspx.h
   echo "int crypto_sign_${NAME}_keypair(unsigned char *pk, unsigned char *sk);" >> $SPXDIR/libspx.h
   echo "int crypto_sign_${NAME}(unsigned char *sm, unsigned long long *smlen, const unsigned char *m, unsigned long long mlen, const unsigned char *sk);" >> $SPXDIR/libspx.h
