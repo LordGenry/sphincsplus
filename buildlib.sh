@@ -40,7 +40,8 @@ for PARAMS in ./params/*;do
 
   cd $SPXDIR/ref
   cp *.c *.h $SPXDIR/libobj/tmp/
-  rm $SPXDIR/libobj/tmp/rng.c
+  rm $SPXDIR/libobj/tmp/rng.{c,h}
+  rm $SPXDIR/libobj/tmp/PQCgenKAT_sign.c
   rm $SPXDIR/libobj/tmp/hash_*.c
   cp hash_$HASH.c $SPXDIR/libobj/tmp
 
