@@ -1,1 +1,3 @@
-*.so
+# ignore lib targets that get build by buildlib.sh
+libspx.so
+libspx.h
