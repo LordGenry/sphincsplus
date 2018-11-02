@@ -15,16 +15,13 @@ if [ -e $SPXDIR/libspx.so ];then
   exit -1
 fi
 
-if [ -e $SPXDIR/libspx.h ];then
-  echo "$SPXDIR/libspx.h already exists, exiting."
-  exit -1
+cd $SPXDIR
+
+if [ ! -e $SPXDIR/libspx.h ];then
+  ./buildheaders.sh
 fi
 
-cd $SPXDIR
 mkdir -p libobj/tmp #XXX: Check if exists
-
-echo "#ifndef LIBSPX_H"  > $SPXDIR/libspx.h
-echo "#define LIBSPX_H" >> $SPXDIR/libspx.h
 
 cd ref
 
@@ -32,7 +29,7 @@ for PARAMS in ./params/*;do
   NAME=$(echo $PARAMS | sed "s/.*params-sphincs-/spx_/" | sed "s/-/_/g" | sed "s/\.h$//")
   HASH=$(echo $NAME | sed "s/spx_//" | sed "s/_.*//")
 
-  if [ $HASH == "sha256" ];then
+  if [ $HASH == "sha256" ];then  # We need to fix the openssl dependency first
     continue;
   fi
 
@@ -75,21 +72,10 @@ for PARAMS in ./params/*;do
     $NAME.o ../$NAME.o
   rm $SPXDIR/libobj/tmp/*
 
-  echo "unsigned long long crypto_sign_${NAME}_secretkeybytes(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_${NAME}_publickeybytes(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_${NAME}_bytes(void);" >> $SPXDIR/libspx.h
-  echo "unsigned long long crypto_sign_${NAME}_seedbytes(void);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_${NAME}_seed_keypair(unsigned char *pk, unsigned char *sk, const unsigned char *seed);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_${NAME}_keypair(unsigned char *pk, unsigned char *sk);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_${NAME}(unsigned char *sm, unsigned long long *smlen, const unsigned char *m, unsigned long long mlen, const unsigned char *sk);" >> $SPXDIR/libspx.h
-  echo "int crypto_sign_${NAME}_open(unsigned char *m, unsigned long long *mlen, const unsigned char *sm, unsigned long long smlen, const unsigned char *pk);" >> $SPXDIR/libspx.h
-
 done
 
 cd $SPXDIR
 
 gcc -shared $SPXDIR/libobj/*.o -o libspx.so
-
-echo "#endif /* #define LIBSPX_H */" >> $SPXDIR/libspx.h
 
 rm -r libobj
